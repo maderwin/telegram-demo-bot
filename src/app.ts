@@ -4,12 +4,12 @@ import * as Boom from 'boom';
 
 import logger from './lib/logger';
 
-import v1 from './v1';
+import api from './api';
 
 const app = express()
     .disable('x-powered-by')
     .get('/ping', (_req, res) => res.end())
-    .use('/v1', v1)
+    .use('/api', api)
     .use((_req, _res, next) => next(Boom.notFound('Endpoint not found')))
     .use((err: any, _req: express.Request, res: express.Response, next: express.NextFunction) => {
         if (err.isBoom) {
@@ -38,3 +38,5 @@ if (!module.parent) {
         logger.info(`Application started on port ${port}`);
     });
 }
+
+export default app;
