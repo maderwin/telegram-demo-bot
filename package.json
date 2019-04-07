@@ -1,0 +1,26 @@
+{
+  "name": "telegram-demo-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maderwin/telegram-demo-bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maderwin/telegram-demo-bot/issues"
+  },
+  "homepage": "https://github.com/maderwin/telegram-demo-bot#readme",
+  "devDependencies": {
+    "@types/node": "^11.13.0",
+    "husky": "^1.3.1",
+    "tslint": "^5.15.0",
+    "tslint-config-loris": "^5.0.0",
+    "typescript": "^3.4.2"
+  }
+}

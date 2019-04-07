@@ -1,0 +1,7 @@
+{
+    "extends": "tslint-config-loris",
+    "rules": {
+        "no-console": false,
+        "no-unused-variable": false
+    }
+}
