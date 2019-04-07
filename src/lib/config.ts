@@ -1,4 +1,4 @@
-import assert from 'assert';
+import * as assert from 'assert';
 import configs from '../../configs';
 import {environment} from './environment';
 

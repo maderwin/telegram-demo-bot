@@ -1,5 +1,5 @@
-import assert from 'assert';
-import express from 'express';
+import * as assert from 'assert';
+import * as express from 'express';
 import * as Boom from 'boom';
 
 import logger from './lib/logger';
@@ -11,7 +11,7 @@ const app = express()
     .get('/ping', (_req, res) => res.end())
     .use('/v1', v1)
     .use((_req, _res, next) => next(Boom.notFound('Endpoint not found')))
-    .use((err: any, _req: express.Request, res: express.Response) => {
+    .use((err: any, _req: express.Request, res: express.Response, next: express.NextFunction) => {
         if (err.isBoom) {
             sendError(res, err);
         } else {
