@@ -9,7 +9,7 @@ export default function (str: string): string {
             newStr += str[i] + countChar;
             countChar = 1;
         }else {
-            newStr = `${newStr}${str[i]}`;
+            newStr += str[i];
         }
     }
     return newStr;
