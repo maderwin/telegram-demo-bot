@@ -1,4 +1,4 @@
-export default function (str: string): string {
+export function encode (str: string): string {
     const length = str.length;
     let newStr = '';
     let countChar = 1;
@@ -13,4 +13,9 @@ export default function (str: string): string {
         }
     }
     return newStr;
+}
+
+export function decode (str: string): string {
+    return str.replace(/(\w)(\d*)/g, (_, currChar, count) =>
+        currChar.repeat(count || 1));
 }

@@ -1,75 +1,52 @@
 import createBot from './lib/telegram-bot';
-import isPalindrom from './func/isPalindrom';
-import decodeRLE from './func/decodeRLE';
-import encodeRLE from './func/encodeRLE';
+import isPalindrom from './func/is-palindrom';
+import * as RLE from './func/rle';
+import {BotCommandStore} from './lib/bot-command-store';
 
 export default function () {
     const bot = createBot();
+    const commandStore = new BotCommandStore(bot);
 
-    let help = '';
-    bot.onText(/\/echo (.+)/, (msg, match) => {
-        // 'msg' is the received Message from Telegram
-        // 'match' is the result of executing the regexp above on the text content
-        // of the message
+    commandStore.addCommand(
+        'isPalindrom',
+        'Проверяет, является ли введенный текст палиндромом.',
+        ({bot}, msg, [messageText, command, arg]): void => {
+            const chatId = msg.chat.id;
+            const response = isPalindrom (arg);
+            bot.sendMessage(chatId, response);
+        }
+    );
 
-        const chatId = msg.chat.id;
-        const resp = match![1]; // the captured "whatever"
+    commandStore.addCommand(
+        'decodeRLE',
+        'Декодирует RLE-сжатую строку.',
+        ({bot}, msg, [messageText, command, arg]): void => {
+            const chatId = msg.chat.id;
+            const response = RLE.decode (arg);
+            bot.sendMessage(chatId, response);
+        }
+    );
 
-        // send back the matched "whatever" to the chat
-        bot.sendMessage(chatId, resp);
-    });
+    commandStore.addCommand(
+        'encodeRLE',
+        'Сжимает строку алгоритмом RLE.',
+        ({bot}, msg, [messageText, command, arg]): void => {
+            const chatId = msg.chat.id;
+            const response = RLE.encode (arg);
+            bot.sendMessage(chatId, response);
+        }
+    );
 
-    // Listen for any kind of message. There are different kinds of
-    // messages.
-    bot.on('message', (msg) => {
-        const chatId = msg.chat.id;
-
-        // send a message to the chat acknowledging receipt of their message
-        bot.sendMessage(chatId, 'Received your message');
-    });
-
-    bot.onText(/\/isPalindrom (.+)/, (msg, match) => {
-        // 'msg' is the received Message from Telegram
-        // 'match' is the result of executing the regexp above on the text content
-        // of the message
-
-        const chatId = msg.chat.id;
-
-        const resp = isPalindrom (match![1]);
-        bot.sendMessage(chatId, resp);
-    });
-
-    bot.onText(/\/decodeRLE (.+)/, (msg, match) => {
-        // 'msg' is the received Message from Telegram
-        // 'match' is the result of executing the regexp above on the text content
-        // of the message
-
-        const chatId = msg.chat.id;
-
-        const resp = decodeRLE (match![1]);
-        bot.sendMessage(chatId, resp);
-    });
-
-    bot.onText(/\/encodeRLE (.+)/, (msg, match) => {
-        // 'msg' is the received Message from Telegram
-        // 'match' is the result of executing the regexp above on the text content
-        // of the message
-
-        const chatId = msg.chat.id;
-
-        const resp = encodeRLE (match![1]);
-        bot.sendMessage(chatId, resp);
-    });
-
-    bot.onText(/\/help/, (msg) => {
-        // 'msg' is the received Message from Telegram
-        // 'match' is the result of executing the regexp above on the text content
-        // of the message
-
-        const chatId = msg.chat.id;
-        help = '/echo\n/isPalindrom\n/encodeRLE\n/decodeRLE';
-        bot.sendMessage(chatId, help);
-    });
+    commandStore.addCommand(
+        'counter',
+        'Счетчик.',
+        ({bot, state}, msg, [messageText, command, arg]): void => {
+            const chatId = msg.chat.id;
+            const counter = state.get([chatId, 'counter']) || 0;
+            state.set([chatId, 'counter'], counter + 1);
+            bot.sendMessage(chatId, `Счётчик: ${counter}`);
+        }
+    );
 
     return bot;
 }
