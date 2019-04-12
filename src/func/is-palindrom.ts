@@ -1,4 +1,4 @@
-export default function (str: string): string {
+export default function (str: string): boolean {
     let start = 0;
     let end = str.length - 1;
 
@@ -12,10 +12,10 @@ export default function (str: string): string {
             continue;
         }
         if (str[start].toLowerCase() !== str[end].toLowerCase()){
-            return 'Не палиндром';
+            return false;
         }
         start++;
         end--;
     }
-    return 'Палиндром';
+    return true;
 }
