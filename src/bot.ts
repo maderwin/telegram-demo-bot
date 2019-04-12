@@ -10,7 +10,7 @@ export default function () {
     commandStore.addCommand(
         'isPalindrom',
         'Проверяет, является ли введенный текст палиндромом.',
-        ({bot}, msg, [messageText, command, arg]): void => {
+        ({bot}, msg, [_messageText, _command, arg]): void => {
             const chatId = msg.chat.id;
             isPalindrom (arg) ?
                 bot.sendMessage(chatId, 'Палиндром') :
@@ -21,7 +21,7 @@ export default function () {
     commandStore.addCommand(
         'decodeRLE',
         'Декодирует RLE-сжатую строку.',
-        ({bot}, msg, [messageText, command, arg]): void => {
+        ({bot}, msg, [_messageText, _command, arg]): void => {
             const chatId = msg.chat.id;
             const response = RLE.decode (arg);
             bot.sendMessage(chatId, response);
@@ -31,7 +31,7 @@ export default function () {
     commandStore.addCommand(
         'encodeRLE',
         'Сжимает строку алгоритмом RLE.',
-        ({bot}, msg, [messageText, command, arg]): void => {
+        ({bot}, msg, [_messageText, _command, arg]): void => {
             const chatId = msg.chat.id;
             const response = RLE.encode (arg);
             bot.sendMessage(chatId, response);
@@ -40,8 +40,8 @@ export default function () {
 
     commandStore.addCommand(
         'counter',
-        'Счетчик.',
-        ({bot, state}, msg, [messageText, command, arg]): void => {
+        'Счетчик. Просто счётчик.',
+        ({bot, state}, msg): void => {
             const chatId = msg.chat.id;
             const counter = state.get([chatId, 'counter']) || 0;
             state.set([chatId, 'counter'], counter + 1);
