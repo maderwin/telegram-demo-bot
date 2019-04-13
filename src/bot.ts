@@ -12,9 +12,7 @@ export default function () {
         'Проверяет, является ли введенный текст палиндромом.',
         ({bot}, msg, [_messageText, _command, arg]): void => {
             const chatId = msg.chat.id;
-            isPalindrom (arg) ?
-                bot.sendMessage(chatId, 'Палиндром') :
-                bot.sendMessage(chatId, 'Не палиндром');
+            bot.sendMessage(chatId, isPalindrom (arg) ? 'Палиндром' : 'Не палиндром');
         }
     );
 
