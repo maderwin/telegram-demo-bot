@@ -68,6 +68,7 @@ export class BotCommandStore extends Map<string, BotCommand> {
                 const command = this.get(match[1]);
                 if (command){
                     this.clearDialog(message.chat.id);
+                  
                     command.handler(
                         this,
                         message,

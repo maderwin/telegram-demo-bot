@@ -2,8 +2,10 @@ import createBot from './lib/telegram-bot';
 import isPalindrom from './func/is-palindrom';
 import * as RLE from './func/rle';
 import {BotCommandStore} from './lib/bot-command-store';
+
 import registr from './func/registration';
 import boobsApi from './func/boobs-api';
+
 
 export default function () {
     const bot = createBot();
