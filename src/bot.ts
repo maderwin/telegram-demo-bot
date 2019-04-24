@@ -3,6 +3,10 @@ import isPalindrom from './func/is-palindrom';
 import * as RLE from './func/rle';
 import {BotCommandStore} from './lib/bot-command-store';
 
+import registr from './func/registration';
+import boobsApi from './func/boobs-api';
+
+
 export default function () {
     const bot = createBot();
     const commandStore = new BotCommandStore(bot);
@@ -44,6 +48,25 @@ export default function () {
             const counter = state.get([chatId, 'counter']) || 0;
             state.set([chatId, 'counter'], counter + 1);
             bot.sendMessage(chatId, `Счётчик: ${counter}`);
+        }
+    );
+
+    commandStore.addCommand(
+        'register',
+        'Регистрация.',
+        ({bot, state}, msg): void => {
+            const chatId = msg.chat.id;
+            commandStore.startDialog(chatId, registr, msg);
+        }
+    );
+
+    commandStore.addCommand(
+        'boobs',
+        'Random boobs.',
+        ({bot}, msg, [_messageText, _command, arg]): void => {
+            const chatId = msg.chat.id;
+            const response = 'http://media.oboobs.ru/' + boobsApi();
+            bot.sendPhoto(chatId, response);
         }
     );
 
