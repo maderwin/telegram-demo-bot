@@ -12,7 +12,30 @@ export type BotCommand = {
     handler: BotCommandHandler;
 };
 
-export class BotChatState extends Map<(number | string)[], any>{}
+export interface BotChatContext {
+    next: BotCommandHandler;
+}
+
+export class BotChatState extends Map<string | number, any>{
+    get(key: string | number | (string | number)[]): any | undefined {
+        if (typeof key !== 'string' && typeof key !== 'number') {
+            key = key.join('.');
+        }
+        return super.get(key);
+    }
+    has(key: string | number | (string | number)[]): boolean {
+        if (typeof key !== 'string' && typeof key !== 'number') {
+            key = key.join('.');
+        }
+        return super.has(key);
+    }
+    set(key: string | number | (string | number)[], value: any): this {
+        if (typeof key !== 'string' && typeof key !== 'number') {
+            key = key.join('.');
+        }
+        return super.set(key, value);
+    }
+}
 
 export class BotCommandStore extends Map<string, BotCommand> {
     bot: TelegramBot;
@@ -36,21 +59,52 @@ export class BotCommandStore extends Map<string, BotCommand> {
     }
 
     onMessage = (message: Message, metadata: Metadata) => {
+        const dialog = this.getDialog(message.chat.id);
+
         if (message.text) {
             const match = message.text.match(/^\/([^\s]*)(?:\s(.*))?$/);
 
             if (match) {
                 const command = this.get(match[1]);
                 if (command){
+                    this.clearDialog(message.chat.id);
                     command.handler(
                         this,
                         message,
                         match
                     );
+                    return;
                 }
             }
         }
+
+        if (dialog) {
+            const {done} = dialog.next(message);
+            if (done) {
+                this.clearDialog(message.chat.id);
+            }
+            return;
+        }
+
+        this.onHelpHandler(
+            this,
+            message,
+            []
+        );
     }
+
+    getDialog = (chatId: number | string) => this.state.get(chatId);
+
+    startDialog = (chatId: number | string, dialogGenerator: any, message: Message) => {
+        const dialog = dialogGenerator(this, chatId);
+        const {done} = dialog.next(message);
+        if (!done) {
+            this.state.set(chatId, dialog);
+        }
+        return dialog;
+    }
+
+    clearDialog = (chatId: number | string) => this.state.delete(chatId);
 
     onHelpHandler: BotCommandHandler = (
         {state, bot},
